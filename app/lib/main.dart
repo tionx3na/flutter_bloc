@@ -12,8 +12,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // wrap the root of the subtree/tree with BlocProvider to make it available to 
+    // all the nodes below the root.
     return BlocProvider<CounterCubit>(
-      create: (context) => CounterCubit(),
+      create: (context) => CounterCubit(), // pass the context to CounterCubit class
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -55,6 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
+            /* To actually show the changing state on the screen, you need to wrap the
+            widget that needs to be state changed inside a blocbuilder for now! and pass
+            CounterCubit and CounterState class to it. Then access the state using the 
+            'state' keyword. */
             BlocBuilder<CounterCubit, CounterState>(
               builder: (context, state) {
                 return Text(
@@ -68,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 FloatingActionButton(
                   onPressed: () {
+                    // we call the decrement fucntion
                     BlocProvider.of<CounterCubit>(context).decrement();
                   },
                   tooltip: 'decrement',
@@ -75,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 FloatingActionButton(
                   onPressed: () {
+                    // we call the increment function
                     BlocProvider.of<CounterCubit>(context).increment();
                   },
                   tooltip: 'increment',
