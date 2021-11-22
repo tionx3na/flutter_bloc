@@ -12,10 +12,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // wrap the root of the subtree/tree with BlocProvider to make it available to 
+    // wrap the root of the subtree/tree with BlocProvider to make it available to
     // all the nodes below the root.
     return BlocProvider<CounterCubit>(
-      create: (context) => CounterCubit(), // pass the context to CounterCubit class
+      create: (context) =>
+          CounterCubit(), // pass the context to CounterCubit class
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -50,47 +51,67 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            /* To actually show the changing state on the screen, you need to wrap the
-            widget that needs to be state changed inside a blocbuilder for now! and pass
-            CounterCubit and CounterState class to it. Then access the state using the 
-            'state' keyword. */
-            BlocBuilder<CounterCubit, CounterState>(
-              builder: (context, state) {
-                return Text(
-                  state.counterValue.toString(),
-                  style: Theme.of(context).textTheme.headline4,
-                );
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    // we call the decrement fucntion
-                    BlocProvider.of<CounterCubit>(context).decrement();
-                  },
-                  tooltip: 'decrement',
-                  child: const Icon(Icons.remove),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    // we call the increment function
-                    BlocProvider.of<CounterCubit>(context).increment();
-                  },
-                  tooltip: 'increment',
-                  child: const Icon(Icons.add),
-                ),
-              ],
-            )
-          ],
+      body: BlocListener<CounterCubit, CounterState>(
+        listener: (context, state) {
+          if(state.wasIncremented == true){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('incremented!!'),
+                duration: Duration(milliseconds: 300),
+              ),
+            );
+          }
+          else if(state.wasIncremented == false){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('decremented!!'),
+                duration: Duration(milliseconds: 300),
+              ),
+            );
+          }
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'You have pushed the button this many times:',
+              ),
+              /* To actually show the changing state on the screen, you need to wrap the
+                  widget that needs to be state changed inside a blocbuilder for now! and pass
+                  CounterCubit and CounterState class to it. Then access the state using the 
+                  'state' keyword. */
+              BlocBuilder<CounterCubit, CounterState>(
+                builder: (context, state) {
+                  return Text(
+                    state.counterValue.toString(),
+                    style: Theme.of(context).textTheme.headline4,
+                  );
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      // we call the decrement fucntion
+                      BlocProvider.of<CounterCubit>(context).decrement();
+                    },
+                    tooltip: 'decrement',
+                    child: const Icon(Icons.remove),
+                  ),
+                  FloatingActionButton(
+                    onPressed: () {
+                      // we call the increment function
+                      BlocProvider.of<CounterCubit>(context).increment();
+                    },
+                    tooltip: 'increment',
+                    child: const Icon(Icons.add),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
